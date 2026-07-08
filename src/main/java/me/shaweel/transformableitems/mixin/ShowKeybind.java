@@ -18,8 +18,13 @@ import net.minecraft.client.Options;
 public class ShowKeybind {
 	@Mutable @Shadow public KeyMapping[] keyMappings;
 
+	private static boolean initialized = false;
+
 	@Inject(method = "load", at = @At("HEAD"))
 	private void addKeybind(CallbackInfo callbackInfo) {
+		if (initialized) return;
+		initialized = true;
+
 		Map<String, Integer> sortOrder = CategorySortOrderAccessor.getCategorySortOrder();
 		int smallestAvailable = 1;
 		while (sortOrder.containsValue(smallestAvailable)) {
