@@ -1,7 +1,5 @@
 package me.shaweel.transformableitems.mixin;
 
-import java.util.Map;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -18,15 +16,12 @@ import net.minecraft.client.Options;
 public class ShowKeybind {
 	@Mutable @Shadow public KeyMapping[] keyMappings;
 
+	private static boolean initialized = false;
+
 	@Inject(method = "load", at = @At("HEAD"))
 	private void addKeybind(CallbackInfo callbackInfo) {
-		Map<String, Integer> sortOrder = CategorySortOrderAccessor.getCategorySortOrder();
-		int smallestAvailable = 1;
-		while (sortOrder.containsValue(smallestAvailable)) {
-			smallestAvailable++;
-		}
-
-		sortOrder.put("key.categories.transformableitems", smallestAvailable);
+		if (initialized) return;
+		initialized = true;
 		ModKeybinds.initialize();
 		keyMappings = ArrayUtils.add(keyMappings, ModKeybinds.OPEN_CONFIG_KEYBIND);
 	}
