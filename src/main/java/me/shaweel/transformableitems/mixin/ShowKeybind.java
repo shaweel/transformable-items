@@ -16,8 +16,13 @@ import net.minecraft.client.Options;
 public class ShowKeybind {
 	@Mutable @Shadow public KeyMapping[] keyMappings;
 
+	private static boolean initialized = false;
+
 	@Inject(method = "load", at = @At("HEAD"))
 	private void addKeybind(CallbackInfo callbackInfo) {
+		if (initialized) return;
+		initialized = true;
+		
 		ModKeybinds.initialize();
 		keyMappings = ArrayUtils.add(keyMappings, ModKeybinds.OPEN_CONFIG_KEYBIND);
 	}
